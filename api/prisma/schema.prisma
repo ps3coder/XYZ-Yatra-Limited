@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  email             String   @unique
+  password          String
+  role              String   @default("null")
+  phone             String  @default("null")
+  address           String  @default("null")
+  date_of_birth     String  @default("null")
+  profile_picture   String  @default("null")
+  is_verified       Boolean  @default(false)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  emergency_contact String  @default("null")
+  preferences       Json  @default("null")
+
+  bookings      Booking[]
+  payments      Payment[]
+  reviews       Review[]
+  notifications Notification[]
+  Agent         Agent[]
+}
+
+model Booking {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  user                 User     @relation(fields: [userId], references: [id])
+  userId               String   @db.ObjectId
+  package              Package  @relation(fields: [packageId], references: [id])
+  packageId            String   @unique @db.ObjectId
+  booking_date         DateTime
+  departure_date       DateTime
+  return_date          DateTime
+  payment              Payment  @relation(fields: [paymentId], references: [id])
+  paymentId            String   @unique @db.ObjectId
+  status               String
+  total_amount         Float
+  number_of_passengers Int
+  special_requests     String?
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+  insurance_details    String?
+  cancellation_policy  String?
+  promo_code           String?
+}
+
+model Payment {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  booking        Booking? @relation
+  bookingId      String   @db.ObjectId
+  user           User     @relation(fields: [userId], references: [id])
+  userId         String   @db.ObjectId
+  amount         Float
+  payment_method String
+  payment_status String
+  transaction_id String
+  currency       String
+  payment_date   DateTime @default(now())
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  refund_status  String?
+  receipt_url    String?
+}
+
+model Package {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  title                String
+  description          String
+  destination          String
+  origin               String
+  price_per_person     Float
+  availability         String
+  duration             String
+  images               Json
+  itinerary            String
+  discount             String?
+  terms_and_conditions String
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+
+  Booking Booking[]
+  Review  Review[]
+}
+
+model Review {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @db.ObjectId
+  package     Package  @relation(fields: [packageId], references: [id])
+  packageId   String   @db.ObjectId
+  rating      Int
+  comment     String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  likes_count Int
+  response    String?
+}
+
+model Transportation {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  pnrNumber         String
+  company           String
+  departure_time    DateTime
+  arrival_time      DateTime
+  origin            String
+  destination       String
+  price             Float
+  availability      String
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  baggage_allowance String
+  rating            Float
+}
+
+model Hotel {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  location        String
+  rating          Int
+  price_per_night Float
+  availability    String
+  amenities       Json
+  images          Json
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  policies        String
+  room_types      String
+  contact_details String
+}
+
+model Notification {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @db.ObjectId
+  message    String
+  type       String
+  is_read    Boolean
+  created_at DateTime @default(now())
+}
+
+model Agent {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  action    String
+  timestamp DateTime @default(now())
+  details   String
+  ipAddress String
+}
