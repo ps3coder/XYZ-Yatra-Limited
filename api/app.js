@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import { configDotenv } from "dotenv";
 import authRoutes from "./src/routes/auth.routes.js";
+import userRoutes from "./src/routes/user.routes.js";
 configDotenv();
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(cookieParser());
 const port = process.env.PORT || 3000;
 // app.use(bodyParser.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port} at http://localhost:${port}`);

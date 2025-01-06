@@ -50,9 +50,7 @@ export const login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
     }
-
     const age = 1000 * 60 * 60 * 24 * 7;
-
     const token = jwt.sign(
       {
         id: user.id,
@@ -62,7 +60,11 @@ export const login = async (req, res) => {
       { expiresIn: age }
     );
     // console.log(token);
-    const { password: userPassword, ...userInfo } = user;
+
+    // const { password: userPassword, ...userInfo } = user;
+
+    const { password: hashedPassword, ...userInfo } = user;
+    // console.log(userInfo);
     res
       .cookie("token", token, {
         httpOnly: true,
@@ -70,9 +72,12 @@ export const login = async (req, res) => {
       })
       .status(200)
       .json(userInfo);
-    console.log(userInfo);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to login" });
   }
+};
+
+export const logout = async (req, res) => {
+  res.clearCookie("token").status(200).json({ message: "Logout successfully" });
 };
