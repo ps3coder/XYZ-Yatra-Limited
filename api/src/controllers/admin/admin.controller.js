@@ -57,7 +57,7 @@ export const login = async (req, res) => {
         id: user.id,
         email: user.email,
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET1,
       { expiresIn: age }
     );
     // console.log(token);

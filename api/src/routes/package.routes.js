@@ -6,13 +6,14 @@ import {
   getPackages,
   updatePackage,
 } from "../controllers/package.controller.js";
+import { adminVerify } from "../middleware/adminVerify.js";
 
 const router = express.Router();
 
-router.post("/", addPackage);
+router.post("/", adminVerify, addPackage);
 router.get("/", getPackages);
 router.get("/:id", getPackage);
-router.put("/:id", updatePackage);
-router.delete("/:id", deletePackage);
+router.put("/:id", adminVerify, updatePackage);
+router.delete("/:id", adminVerify, deletePackage);
 
 export default router;
