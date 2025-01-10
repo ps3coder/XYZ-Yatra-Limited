@@ -45,7 +45,7 @@ export const getTransportation = async (req, res) => {
         id,
       },
     });
-    return res.status(404).json(getTransportation);
+    return res.status(200).json(getTransportation);
   } catch (error) {
     console.error(error);
     return res
@@ -85,7 +85,7 @@ export const deleteTransportation = async (req, res) => {
         id,
       },
     });
-    return res.status(404).json({ message: "Item deleted successfully" });
+    return res.status(200).json({ message: "Item deleted successfully" });
   } catch (error) {
     console.error(error);
     return res

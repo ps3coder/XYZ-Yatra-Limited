@@ -19,15 +19,15 @@ model User {
   email             String   @unique
   password          String
   role              String   @default("null")
-  phone             String  @default("null")
-  address           String  @default("null")
-  date_of_birth     String  @default("null")
-  profile_picture   String  @default("null")
+  phone             String   @default("null")
+  address           String   @default("null")
+  date_of_birth     String   @default("null")
+  profile_picture   String   @default("null")
   is_verified       Boolean  @default(false)
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
-  emergency_contact String  @default("null")
-  preferences       Json  @default("null")
+  emergency_contact String   @default("null")
+  preferences       Json     @default("null")
 
   bookings      Booking[]
   payments      Payment[]
@@ -47,7 +47,7 @@ model Booking {
   return_date          DateTime
   payment              Payment  @relation(fields: [paymentId], references: [id])
   paymentId            String   @unique @db.ObjectId
-  status               String
+  status               String   @default("pending")
   total_amount         Float
   number_of_passengers Int
   special_requests     String?
@@ -148,7 +148,7 @@ model Notification {
   userId     String   @db.ObjectId
   message    String
   type       String
-  is_read    Boolean
+  is_read    String
   created_at DateTime @default(now())
 }
 
